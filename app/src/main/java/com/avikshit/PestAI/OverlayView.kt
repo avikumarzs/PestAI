@@ -1,4 +1,4 @@
-package com.surendramaran.yolov8tflite
+package com.avikshit.PestAI
 
 import android.content.Context
 import android.graphics.Canvas
@@ -11,6 +11,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import java.util.LinkedList
 import kotlin.math.max
+import com.avikshit.PestAI.R
 
 class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 

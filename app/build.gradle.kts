@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.surendramaran.yolov8tflite"
+    namespace = "com.avikshit.PestAI"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.surendramaran.yolov8tflite"
+        applicationId = "com.avikshit.PestAI"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

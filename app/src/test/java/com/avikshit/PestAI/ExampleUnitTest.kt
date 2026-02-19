@@ -1,4 +1,4 @@
-package com.surendramaran.yolov8tflite
+package com.avikshit.PestAI
 
 import org.junit.Test
 

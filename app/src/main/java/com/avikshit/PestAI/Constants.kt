@@ -1,4 +1,4 @@
-package com.surendramaran.yolov8tflite
+package com.avikshit.PestAI
 
 object Constants {
     const val MODEL_PATH = "bug_v8.tflite"

@@ -18,9 +18,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.avikshit.PestAI.Constants.LABELS_PATH
 import com.avikshit.PestAI.Constants.MODEL_PATH
-import com.avikshit.PestAI.databinding.ActivityMainBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import com.avikshit.PestAI.R
+import com.avikshit.PestAI.databinding.ActivityMainBinding
+import com.avikshit.PestAI.BoundingBox
 
 class MainActivity : AppCompatActivity(), Detector.DetectorListener {
     private lateinit var binding: ActivityMainBinding
