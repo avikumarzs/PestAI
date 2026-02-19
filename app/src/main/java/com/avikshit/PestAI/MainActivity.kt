@@ -1,4 +1,4 @@
-package com.surendramaran.yolov8tflite
+package com.avikshit.PestAI
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -16,9 +16,9 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.surendramaran.yolov8tflite.Constants.LABELS_PATH
-import com.surendramaran.yolov8tflite.Constants.MODEL_PATH
-import com.surendramaran.yolov8tflite.databinding.ActivityMainBinding
+import com.avikshit.PestAI.Constants.LABELS_PATH
+import com.avikshit.PestAI.Constants.MODEL_PATH
+import com.avikshit.PestAI.databinding.ActivityMainBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
