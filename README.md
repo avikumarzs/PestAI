@@ -1,20 +1,30 @@
-## YOLOv8 Live Object Detection Android Application
+# 🐛 PEstAI: Real-Time Edge AI Detection
 
-### Notice
-This project has been moved to a new repository. You can find the latest version and updates [here](https://github.com/surendramaran/YOLO).
+PEstAI is a high-performance Android application optimized for real-time edge computing. It provides a lag-free object detection pipeline using advanced vision models running entirely on-device via TensorFlow Lite.
 
-### Description
-This Android application is designed to perform live object detection using the YOLOv8 machine learning model. YOLOv8 (You Only Look Once version 8) is known for its real-time object detection capabilities, and this app brings that functionality to Android devices.
+## 🌟 Implemented Features
 
-### Getting Started
-To use this repository for any custom YOLOv8 Object detection model, follow these steps:
-1. Clone this repository to your local machine using `git clone https://github.com/surendramaran/YOLOv8-TfLite-Object-Detector`.
-2. Put your .tflite model and .txt label file inside the assets folder
-3. Rename paths of your model and labels file in Constants.kt file
-4. **Build and Run:**
+* **Dual-Model Support:** Ships with both **YOLOv8 Nano** and **YOLOv11 Nano** models pre-loaded in the project assets, allowing for flexible testing and deployment.
+* **Hybrid Quantization Engine:** The TFLite interpreter is configured to perfectly handle Float32 input/output tensors while the models utilize Int8 quantized internal weights. This keeps the app size minimal (~3MB per model) without crashing from data type mismatches.
+* **Lag-Free Camera Preview:** Implements a decoupled CameraX architecture. The inference engine uses a custom "Busy-Flag" backpressure strategy, instantly dropping frames when the CPU is busy. This guarantees the user's camera feed remains at a fluid 30 FPS regardless of the device's processing power.
+* **Strict Resolution Pipeline:** Pre-processes the camera feed into a strict 640x640 normalized float array (0.0f - 1.0f) to match the exact training parameters of the YOLO models.
 
-### Contributing
-Contributions are welcome! If you want to contribute to this project, feel free to fork the repository and submit a pull request with your changes.
+## 🏗️ Technical Architecture
 
-### Contact
-For any questions or feedback, feel free to contact [surendramaran8@gmail.com] or open an [issue](https://github.com/surendramaran/YOLOv8-TfLite-Object-Detector/issues/new) in the repository.
+1. **Producer:** `androidx.camera.view.PreviewView` captures frames constantly.
+2. **Filter:** The `ImageAnalysis.Analyzer` checks the inference status. If the model is currently processing a frame, the new frame is closed and discarded immediately to prevent CPU queuing and thermal throttling.
+3. **Consumer:** The `Detector.kt` processes the 640x640 frame on a dedicated background `Executor`.
+
+## 🛠️ Tech Stack
+
+* **Language:** Kotlin
+* **Framework:** Android SDK (API 24+)
+* **Machine Learning:** TensorFlow Lite 2.14.0
+* **Vision System:** AndroidX CameraX
+
+## 🚀 Getting Started
+
+1. Clone the repository to your local machine.
+2. Open the project in **Android Studio**.
+3. *(No model download required - `yolov8n.tflite` and `yolov11n.tflite` are already included in the `src/main/assets/` folder).*
+4. Sync Gradle and click **Run** to deploy to your Android device.
