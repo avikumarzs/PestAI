@@ -25,6 +25,11 @@ class Detector(
     private val detectorListener: DetectorListener,
 ) {
 
+    // Short-term memory for the 3-Frame Verification Engine
+    // Anti-Blink Engine Memory
+    private var lastStableBoxes = listOf<BoundingBox>()
+    private var emptyFrameCount = 0
+
     private var interpreter: Interpreter
     private var labels = mutableListOf<String>()
 
@@ -133,7 +138,6 @@ class Detector(
         val tensorImage = TensorImage(INPUT_IMAGE_TYPE)
         tensorImage.load(resizedBitmap)
 
-        // --- The code that got deleted starts here! ---
         val processedImage = imageProcessor.process(tensorImage)
         val imageBuffer = processedImage.buffer
 
@@ -148,7 +152,12 @@ class Detector(
             return
         }
 
-        detectorListener.onDetect(bestBoxes, inferenceTime)
+        // --- LIVE COUNTER LOGIC ---
+        // Group the boxes by name and count how many of each pest are on screen
+        val pestCounts = bestBoxes.groupingBy { it.clsName }.eachCount()
+
+        // Send the boxes, the time, AND the counts to the frontend
+        detectorListener.onDetect(bestBoxes, inferenceTime, pestCounts)
     }
 
     private fun bestBox(array: FloatArray) : List<BoundingBox>? {
@@ -170,9 +179,6 @@ class Detector(
             }
 
             if (maxConf > CONFIDENCE_THRESHOLD) {
-
-
-
                 val clsName = labels[maxIdx]
                 val cx = array[c]
                 val cy = array[c + numElements]
@@ -197,10 +203,27 @@ class Detector(
             }
         }
 
-        if (boundingBoxes.isEmpty()) return null
+        // 1. Get the standard boxes
+        val nmsBoxes = if (boundingBoxes.isEmpty()) emptyList<BoundingBox>() else applyNMS(boundingBoxes)
 
-        return applyNMS(boundingBoxes)
-    }
+        // 2. THE ANTI-BLINK ENGINE
+        if (nmsBoxes.isNotEmpty()) {
+            // Pest detected! Update our stable memory and show it immediately.
+            lastStableBoxes = nmsBoxes
+            emptyFrameCount = 0
+            return nmsBoxes
+        } else {
+            // No pest detected in THIS frame.
+            // Give it a 3-frame grace period before deleting the box.
+            emptyFrameCount++
+            if (emptyFrameCount <= 3 && lastStableBoxes.isNotEmpty()) {
+                return lastStableBoxes // Keep drawing the last known boxes so it doesn't blink
+            } else {
+                lastStableBoxes = emptyList() // It's truly gone
+                return null
+            }
+        }
+    } // End of bestBox function
 
     private fun applyNMS(boxes: List<BoundingBox>) : MutableList<BoundingBox> {
         val sortedBoxes = boxes.sortedByDescending { it.cnf }.toMutableList()
@@ -237,7 +260,7 @@ class Detector(
 
     interface DetectorListener {
         fun onEmptyDetect()
-        fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long)
+        fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long, pestCounts: Map<String, Int>)
     }
 
     companion object {
@@ -245,10 +268,11 @@ class Detector(
         private const val INPUT_STANDARD_DEVIATION = 255f
         private val INPUT_IMAGE_TYPE = DataType.FLOAT32
         private val OUTPUT_IMAGE_TYPE = DataType.FLOAT32
-        private const val CONFIDENCE_THRESHOLD = 0.3F
+        private const val CONFIDENCE_THRESHOLD = 0.55F
         private const val IOU_THRESHOLD = 0.5F
     }
 }
+
 // Helper function to crop the camera frame to a perfect square
 private fun cropToSquare(bitmap: Bitmap): Bitmap {
     val width = bitmap.width

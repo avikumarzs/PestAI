@@ -198,7 +198,7 @@ class ScanFragment : Fragment(R.layout.fragment_scan), Detector.DetectorListener
         }
     }
 
-    override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
+    override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long, pestCounts: Map<String, Int>) {
         activity?.runOnUiThread {
             inferenceTextView?.text = "${inferenceTime}ms"
             overlayView?.apply {
