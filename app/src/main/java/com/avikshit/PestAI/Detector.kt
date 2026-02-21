@@ -144,7 +144,7 @@ class Detector(
         val output = TensorBuffer.createFixedSize(intArrayOf(1, numChannel, numElements), OUTPUT_IMAGE_TYPE)
         interpreter.run(imageBuffer, output.buffer)
 
-        val bestBoxes = bestBox(output.floatArray)
+        val bestBoxes = bestBox(output.floatArray, squareBitmap)
         inferenceTime = SystemClock.uptimeMillis() - inferenceTime
 
         if (bestBoxes == null) {
@@ -160,7 +160,7 @@ class Detector(
         detectorListener.onDetect(bestBoxes, inferenceTime, pestCounts)
     }
 
-    private fun bestBox(array: FloatArray) : List<BoundingBox>? {
+    private fun bestBox(array: FloatArray, bitmap: Bitmap) : List<BoundingBox>? {
 
         val boundingBoxes = mutableListOf<BoundingBox>()
 
@@ -179,27 +179,33 @@ class Detector(
             }
 
             if (maxConf > CONFIDENCE_THRESHOLD) {
-                val clsName = labels[maxIdx]
                 val cx = array[c]
                 val cy = array[c + numElements]
                 val w = array[c + numElements * 2]
                 val h = array[c + numElements * 3]
-                val x1 = cx - (w/2F)
-                val y1 = cy - (h/2F)
-                val x2 = cx + (w/2F)
-                val y2 = cy + (h/2F)
-                if (x1 < 0F || x1 > 1F) continue
-                if (y1 < 0F || y1 > 1F) continue
-                if (x2 < 0F || x2 > 1F) continue
-                if (y2 < 0F || y2 > 1F) continue
+                
+                var finalConf = maxConf
+                if (!isHabitat(bitmap, cx, cy, w, h)) { finalConf *= 0.5F }
 
-                boundingBoxes.add(
-                    BoundingBox(
-                        x1 = x1, y1 = y1, x2 = x2, y2 = y2,
-                        cx = cx, cy = cy, w = w, h = h,
-                        cnf = maxConf, cls = maxIdx, clsName = clsName
+                if (finalConf > CONFIDENCE_THRESHOLD) {
+                    val clsName = labels[maxIdx]
+                    val x1 = cx - (w/2F)
+                    val y1 = cy - (h/2F)
+                    val x2 = cx + (w/2F)
+                    val y2 = cy + (h/2F)
+                    if (x1 < 0F || x1 > 1F) continue
+                    if (y1 < 0F || y1 > 1F) continue
+                    if (x2 < 0F || x2 > 1F) continue
+                    if (y2 < 0F || y2 > 1F) continue
+
+                    boundingBoxes.add(
+                        BoundingBox(
+                            x1 = x1, y1 = y1, x2 = x2, y2 = y2,
+                            cx = cx, cy = cy, w = w, h = h,
+                            cnf = finalConf, cls = maxIdx, clsName = clsName
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -284,4 +290,29 @@ private fun cropToSquare(bitmap: Bitmap): Bitmap {
     val startY = (height - minEdge) / 2
 
     return Bitmap.createBitmap(bitmap, startX, startY, minEdge, minEdge)
+}
+// Checks the 4 pixels immediately outside the bounding box for Leaf (Green) or Soil (Brown) colors
+private fun isHabitat(bitmap: Bitmap, cx: Float, cy: Float, w: Float, h: Float): Boolean {
+    val pixelCx = (cx * bitmap.width).toInt()
+    val pixelCy = (cy * bitmap.height).toInt()
+    val pixelW = (w * bitmap.width).toInt()
+    val pixelH = (h * bitmap.height).toInt()
+    val offset = 15 
+    val points = listOf(
+        Pair(pixelCx, (pixelCy - pixelH / 2 - offset).coerceIn(0, bitmap.height - 1)),
+        Pair(pixelCx, (pixelCy + pixelH / 2 + offset).coerceIn(0, bitmap.height - 1)),
+        Pair((pixelCx - pixelW / 2 - offset).coerceIn(0, bitmap.width - 1), pixelCy),
+        Pair((pixelCx + pixelW / 2 + offset).coerceIn(0, bitmap.width - 1), pixelCy)
+    )
+    var habitatScore = 0
+    for (p in points) {
+        val color = bitmap.getPixel(p.first, p.second)
+        val r = (color shr 16) and 0xFF
+        val g = (color shr 8) and 0xFF
+        val b = color and 0xFF
+        val isGreen = g > r && g > b
+        val isSoil = r > g && g > b && r < 180 
+        if (isGreen || isSoil) habitatScore++
+    }
+    return habitatScore >= 1
 }
