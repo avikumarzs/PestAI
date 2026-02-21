@@ -23,4 +23,9 @@
         android:name="com.avikshit.PestAI.ui.HistoryFragment"
         android:label="@string/nav_history" />
 
+    <fragment
+        android:id="@+id/remediesFragment"
+        android:name="com.avikshit.PestAI.ui.RemediesFragment"
+        android:label="@string/nav_remedies" />
+
 </navigation>

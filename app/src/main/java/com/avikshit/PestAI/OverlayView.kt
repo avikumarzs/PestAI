@@ -15,6 +15,9 @@ import com.avikshit.PestAI.R
 
 class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 
+    /** When true, draw HUD-style corner brackets instead of full rectangles (Rover mode). */
+    var isRoverMode = false
+
     private var results = listOf<BoundingBox>()
     private var boxPaint = Paint()
     private var textBackgroundPaint = Paint()
@@ -58,9 +61,13 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
             val right = it.x2 * width
             val bottom = it.y2 * height
 
-            canvas.drawRect(left, top, right, bottom, boxPaint)
-            val drawableText = it.clsName
+            if (isRoverMode) {
+                drawCornerBrackets(canvas, left, top, right, bottom)
+            } else {
+                canvas.drawRect(left, top, right, bottom, boxPaint)
+            }
 
+            val drawableText = it.clsName
             textBackgroundPaint.getTextBounds(drawableText, 0, drawableText.length, bounds)
             val textWidth = bounds.width()
             val textHeight = bounds.height()
@@ -72,8 +79,27 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
                 textBackgroundPaint
             )
             canvas.drawText(drawableText, left, top + bounds.height(), textPaint)
-
         }
+    }
+
+    /** Draws HUD-style corner brackets (drone targeting) at the four corners of the box. */
+    private fun drawCornerBrackets(canvas: Canvas, left: Float, top: Float, right: Float, bottom: Float) {
+        val w = right - left
+        val h = bottom - top
+        val len = (minOf(w, h) * BRACKET_LENGTH_RATIO).coerceIn(MIN_BRACKET_LEN, MAX_BRACKET_LEN)
+
+        // Top-left: vertical down, horizontal right
+        canvas.drawLine(left, top, left, top + len, boxPaint)
+        canvas.drawLine(left, top, left + len, top, boxPaint)
+        // Top-right: vertical down, horizontal left
+        canvas.drawLine(right, top, right, top + len, boxPaint)
+        canvas.drawLine(right, top, right - len, top, boxPaint)
+        // Bottom-left: vertical up, horizontal right
+        canvas.drawLine(left, bottom, left, bottom - len, boxPaint)
+        canvas.drawLine(left, bottom, left + len, bottom, boxPaint)
+        // Bottom-right: vertical up, horizontal left
+        canvas.drawLine(right, bottom, right, bottom - len, boxPaint)
+        canvas.drawLine(right, bottom, right - len, bottom, boxPaint)
     }
 
     fun setResults(boundingBoxes: List<BoundingBox>) {
@@ -83,5 +109,8 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
     companion object {
         private const val BOUNDING_RECT_TEXT_PADDING = 8
+        private const val BRACKET_LENGTH_RATIO = 0.2f
+        private const val MIN_BRACKET_LEN = 20f
+        private const val MAX_BRACKET_LEN = 80f
     }
 }

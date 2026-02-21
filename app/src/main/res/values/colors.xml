@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="bounding_box_color">#234567</color>
-    <color name="gray">#999</color>
+
+    <!-- Light Green Dashboard -->
+    <color name="background_cream">#FBFBF9</color>
+    <color name="forest_green">#2E5C31</color>
+    <color name="critical_red">#D32F2F</color>
+    <color name="warning_yellow">#FBC02D</color>
+
+    <!-- Card & surfaces -->
+    <color name="card_white">#FFFFFF</color>
+    <color name="banner_light_green">#E8F5E9</color>
+
+    <!-- Legacy / Scan screen (dark camera UI) -->
+    <color name="bounding_box_color">#2E5C31</color>
+    <color name="gray">#999999</color>
     <color name="orange">#F93</color>
 </resources>

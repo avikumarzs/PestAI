@@ -1,8 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.PestAI" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <!-- Light Green Agricultural Dashboard theme -->
+    <style name="Base.Theme.PestAI" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/forest_green</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/banner_light_green</item>
+        <item name="colorOnPrimaryContainer">@color/forest_green</item>
+        <item name="colorSurface">@color/card_white</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="android:statusBarColor">@color/forest_green</item>
+        <item name="android:navigationBarColor">@color/card_white</item>
+        <item name="android:windowBackground">@color/background_cream</item>
+        <item name="colorError">@color/critical_red</item>
+        <item name="colorOutline">@color/forest_green</item>
     </style>
 
     <style name="Theme.PestAI" parent="Base.Theme.PestAI" />

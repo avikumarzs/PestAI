@@ -4,43 +4,60 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="0dp"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp">
+    app:cardBackgroundColor="@color/card_white"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:minHeight="56dp">
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:contentDescription="@string/history_warning_icon_content_description"
-            android:src="@android:drawable/ic_dialog_alert"
-            app:tint="?attr/colorError" />
+        <!-- 4dp color-coded left edge (Red Critical / Yellow Warning) -->
+        <View
+            android:id="@+id/leftEdgeBar"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="@color/warning_yellow" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tvPestName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceTitleMedium" />
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/tvTimestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/gray" />
         </LinearLayout>
-    </LinearLayout>
 
+        <TextView
+            android:id="@+id/tvConfidencePill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_confidence_pill"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            android:textColor="@color/white" />
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

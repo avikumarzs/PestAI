@@ -6,7 +6,9 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
+import android.animation.ObjectAnimator
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.AspectRatio
@@ -26,6 +28,7 @@ import com.avikshit.PestAI.R
 import com.avikshit.PestAI.data.AppDatabase
 import com.avikshit.PestAI.data.ScanEntity
 import com.avikshit.PestAI.data.ScanRepository
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.materialswitch.MaterialSwitch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -45,6 +48,9 @@ class ScanFragment : Fragment(R.layout.fragment_scan), Detector.DetectorListener
     private var overlayView: OverlayView? = null
     private var inferenceTextView: TextView? = null
     private var gpuSwitch: MaterialSwitch? = null
+    private var modeToggleGroup: MaterialButtonToggleGroup? = null
+    private var scanModeStatusText: TextView? = null
+    private var roverPulseAnimator: ObjectAnimator? = null
 
     private var lastSavedAtMillis: Long = 0L
 
@@ -62,6 +68,8 @@ class ScanFragment : Fragment(R.layout.fragment_scan), Detector.DetectorListener
         overlayView = view.findViewById(R.id.overlay)
         inferenceTextView = view.findViewById(R.id.tvInferenceTime)
         gpuSwitch = view.findViewById(R.id.switchGpu)
+        modeToggleGroup = view.findViewById(R.id.modeToggleGroup)
+        scanModeStatusText = view.findViewById(R.id.tvScanModeStatus)
 
         scanRepository = ScanRepository(AppDatabase.getInstance(requireContext()).scanDao())
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -95,6 +103,10 @@ class ScanFragment : Fragment(R.layout.fragment_scan), Detector.DetectorListener
         overlayView = null
         inferenceTextView = null
         gpuSwitch = null
+        modeToggleGroup = null
+        scanModeStatusText = null
+        roverPulseAnimator?.cancel()
+        roverPulseAnimator = null
     }
 
     private fun bindListeners() {
@@ -103,6 +115,38 @@ class ScanFragment : Fragment(R.layout.fragment_scan), Detector.DetectorListener
                 detector?.restart(isGpu = isChecked)
             }
         }
+
+        modeToggleGroup?.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+            val isRover = checkedId == R.id.btnModeRover
+            overlayView?.isRoverMode = isRover
+            if (isRover) {
+                scanModeStatusText?.text = getString(R.string.scan_mode_rover).let { "🔴 $it" }
+                startRoverPulse()
+            } else {
+                scanModeStatusText?.text = getString(R.string.scan_mode_general)
+                stopRoverPulse()
+            }
+        }
+        scanModeStatusText?.text = getString(R.string.scan_mode_general)
+    }
+
+    private fun startRoverPulse() {
+        stopRoverPulse()
+        val status = scanModeStatusText ?: return
+        roverPulseAnimator = ObjectAnimator.ofFloat(status, View.ALPHA, 1f, 0.4f).apply {
+            duration = 800
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+            interpolator = LinearInterpolator()
+            start()
+        }
+    }
+
+    private fun stopRoverPulse() {
+        roverPulseAnimator?.cancel()
+        roverPulseAnimator = null
+        scanModeStatusText?.alpha = 1f
     }
 
     private fun startCamera() {

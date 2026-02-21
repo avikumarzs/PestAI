@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.avikshit.PestAI.R
 import com.avikshit.PestAI.data.ScanEntity
@@ -13,7 +14,7 @@ import java.util.Locale
 
 class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
     private val items = mutableListOf<ScanEntity>()
-    private val dateFormatter = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+    private val dateFormatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
     fun submitList(newItems: List<ScanEntity>) {
         items.clear()
@@ -34,14 +35,25 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
     override fun getItemCount(): Int = items.size
 
     class HistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val leftEdgeBar: View = itemView.findViewById(R.id.leftEdgeBar)
         private val pestNameTextView: TextView = itemView.findViewById(R.id.tvPestName)
         private val timestampTextView: TextView = itemView.findViewById(R.id.tvTimestamp)
+        private val confidencePill: TextView = itemView.findViewById(R.id.tvConfidencePill)
 
         fun bind(scanEntity: ScanEntity, formatter: SimpleDateFormat) {
-            pestNameTextView.text = "${scanEntity.pestName} (${(scanEntity.confidence * 100).toInt()}%)"
-            val timestampText = formatter.format(Date(scanEntity.timestamp))
-            timestampTextView.text =
-                itemView.context.getString(R.string.history_item_time, timestampText)
+            val ctx = itemView.context
+            val isCritical = isCriticalPest(scanEntity.pestName)
+            leftEdgeBar.setBackgroundColor(
+                ContextCompat.getColor(ctx, if (isCritical) R.color.critical_red else R.color.warning_yellow)
+            )
+            pestNameTextView.text = scanEntity.pestName
+            timestampTextView.text = ctx.getString(R.string.history_item_time, formatter.format(Date(scanEntity.timestamp)))
+            confidencePill.text = "${(scanEntity.confidence * 100).toInt()}%"
+        }
+
+        private fun isCriticalPest(pestName: String): Boolean {
+            val lower = pestName.lowercase()
+            return lower.contains("armyworm") || lower.contains("stem borer") || lower.contains("borer")
         }
     }
 }

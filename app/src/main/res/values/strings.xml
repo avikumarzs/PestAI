@@ -14,5 +14,14 @@
     <string name="history_title">Scan History</string>
     <string name="history_empty">No scan history yet. Run a scan to populate this list.</string>
     <string name="history_warning_icon_content_description">Warning icon</string>
-    <string name="history_item_time">Detected at: %1$s</string>
+    <string name="history_item_time">Detected at %1$s</string>
+    <string name="nav_remedies">Remedies</string>
+    <string name="metric_critical_alerts">Critical Alerts</string>
+    <string name="metric_warning_alerts">Warning Alerts</string>
+    <string name="metric_total_scans">Total Scans</string>
+    <string name="remedies_banner">Safe &amp; Sustainable Solutions</string>
+    <string name="scan_mode_general">Manual Scan Active</string>
+    <string name="scan_mode_rover">AUTONOMOUS ROVER LOCK</string>
+    <string name="scan_mode_general_label">General</string>
+    <string name="scan_mode_rover_label">Rover</string>
 </resources>
