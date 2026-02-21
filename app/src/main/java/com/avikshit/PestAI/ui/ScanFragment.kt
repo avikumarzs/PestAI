@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.animation.ObjectAnimator
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
@@ -129,6 +130,16 @@ class ScanFragment : Fragment(R.layout.fragment_scan), Detector.DetectorListener
             }
         }
         scanModeStatusText?.text = getString(R.string.scan_mode_general)
+
+        overlayView?.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val x = event.x / view.width
+                val y = event.y / view.height
+                detector?.penalizeDetection(x, y)
+                view.performClick()
+            }
+            true // Consume the touch event
+        }
     }
 
     private fun startRoverPulse() {
