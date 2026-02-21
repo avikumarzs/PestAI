@@ -124,10 +124,16 @@ class Detector(
 
         var inferenceTime = SystemClock.uptimeMillis()
 
-        val resizedBitmap = Bitmap.createScaledBitmap(frame, tensorWidth, tensorHeight, false)
+        // 1. Crop the raw camera feed to a square first
+        val squareBitmap = cropToSquare(frame)
+
+        // 2. Scale the perfectly square image down to match the YOLO model
+        val resizedBitmap = Bitmap.createScaledBitmap(squareBitmap, tensorWidth, tensorHeight, false)
 
         val tensorImage = TensorImage(INPUT_IMAGE_TYPE)
         tensorImage.load(resizedBitmap)
+
+        // --- The code that got deleted starts here! ---
         val processedImage = imageProcessor.process(tensorImage)
         val imageBuffer = processedImage.buffer
 
@@ -242,4 +248,16 @@ class Detector(
         private const val CONFIDENCE_THRESHOLD = 0.3F
         private const val IOU_THRESHOLD = 0.5F
     }
+}
+// Helper function to crop the camera frame to a perfect square
+private fun cropToSquare(bitmap: Bitmap): Bitmap {
+    val width = bitmap.width
+    val height = bitmap.height
+    val minEdge = Math.min(width, height)
+
+    // Calculate the center crop coordinates
+    val startX = (width - minEdge) / 2
+    val startY = (height - minEdge) / 2
+
+    return Bitmap.createBitmap(bitmap, startX, startY, minEdge, minEdge)
 }
