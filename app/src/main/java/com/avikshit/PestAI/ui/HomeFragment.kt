@@ -10,23 +10,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.avikshit.PestAI.R
 import com.avikshit.PestAI.data.AppDatabase
-import com.avikshit.PestAI.data.ScanEntity
 import com.avikshit.PestAI.data.ScanRepository
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.button.MaterialButton
 import java.util.concurrent.Executors
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var scanRepository: ScanRepository
     private val ioExecutor = Executors.newSingleThreadExecutor()
-    private val historyAdapter = HistoryAdapter()
+    private val historyAdapter = HistoryAdapter(null)
+
+    /** Mock: true = show "Rain Tomorrow" and spray delay warning. */
+    private val mockRainTomorrow = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         scanRepository = ScanRepository(AppDatabase.getInstance(requireContext()).scanDao())
 
-        view.findViewById<ExtendedFloatingActionButton>(R.id.fabStartScan).setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.btnLaunchScanner).setOnClickListener {
             findNavController().navigate(R.id.scanFragment)
         }
 
@@ -34,6 +36,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         rvRecentScans.layoutManager = LinearLayoutManager(requireContext())
         rvRecentScans.adapter = historyAdapter
 
+        setupWeatherCard(view)
         loadDashboard(view)
     }
 
@@ -47,9 +50,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         ioExecutor.shutdown()
     }
 
+    private fun setupWeatherCard(rootView: View) {
+        val tvWeatherState = rootView.findViewById<TextView>(R.id.tvWeatherState)
+        val tvWeatherWarning = rootView.findViewById<TextView>(R.id.tvWeatherWarning)
+        if (mockRainTomorrow) {
+            tvWeatherState.text = getString(R.string.weather_rain_tomorrow)
+            tvWeatherWarning.isVisible = true
+            tvWeatherWarning.text = "\uD83C\uDF27 " + getString(R.string.weather_rain_warning)
+        } else {
+            tvWeatherState.text = getString(R.string.weather_clear)
+            tvWeatherWarning.isVisible = false
+        }
+    }
+
     private fun loadDashboard(rootView: View) {
         val tvMetricCritical = rootView.findViewById<TextView>(R.id.tvMetricCritical)
-        val tvMetricWarning = rootView.findViewById<TextView>(R.id.tvMetricWarning)
         val tvMetricTotal = rootView.findViewById<TextView>(R.id.tvMetricTotal)
         val rvRecentScans = rootView.findViewById<RecyclerView>(R.id.rvRecentScans)
         val tvEmptyState = rootView.findViewById<TextView>(R.id.tvEmptyState)
@@ -57,11 +72,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         ioExecutor.execute {
             val scans = scanRepository.getAllScans()
             val criticalCount = scans.count { isCriticalPest(it.pestName) }
-            val warningCount = scans.size - criticalCount
 
             activity?.runOnUiThread {
                 tvMetricCritical.text = criticalCount.toString()
-                tvMetricWarning.text = warningCount.toString()
                 tvMetricTotal.text = scans.size.toString()
                 historyAdapter.submitList(scans)
                 val isEmpty = scans.isEmpty()

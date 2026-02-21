@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="0dp"
     android:layout_marginBottom="12dp"
     app:cardBackgroundColor="@color/card_white"
     app:cardCornerRadius="16dp"
@@ -15,32 +14,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:minHeight="56dp">
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
-        <!-- 4dp color-coded left edge (Red Critical / Yellow Warning) -->
         <View
             android:id="@+id/leftEdgeBar"
             android:layout_width="4dp"
             android:layout_height="match_parent"
-            android:background="@color/warning_yellow" />
+            android:minHeight="56dp" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:gravity="center_vertical">
-
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/tvPestName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:textColor="@color/text_primary" />
-
             <TextView
-                android:id="@+id/tvTimestamp"
+                android:id="@+id/tvRemedyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -49,15 +45,20 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tvConfidencePill"
+            android:id="@+id/tvBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_confidence_pill"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="6dp"
-            android:textAppearance="?attr/textAppearanceLabelMedium"
+            android:layout_marginEnd="8dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:textSize="12sp"
             android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remedy_see_detail"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            android:textColor="@color/primary_emerald" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

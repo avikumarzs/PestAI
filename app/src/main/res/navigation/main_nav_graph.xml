@@ -9,14 +9,16 @@
         android:name="com.avikshit.PestAI.ui.HomeFragment"
         android:label="@string/nav_home">
         <action
-            android:id="@+id/action_homeFragment_to_scanFragment"
-            app:destination="@id/scanFragment" />
+            android:id="@+id/action_home_to_scan"
+            app:destination="@id/scanFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
-        android:id="@+id/scanFragment"
-        android:name="com.avikshit.PestAI.ui.ScanFragment"
-        android:label="@string/nav_scan" />
+        android:id="@+id/devicesFragment"
+        android:name="com.avikshit.PestAI.ui.DevicesFragment"
+        android:label="@string/nav_devices" />
 
     <fragment
         android:id="@+id/historyFragment"
@@ -28,4 +30,22 @@
         android:name="com.avikshit.PestAI.ui.RemediesFragment"
         android:label="@string/nav_remedies" />
 
+    <fragment
+        android:id="@+id/remedyDetailFragment"
+        android:name="com.avikshit.PestAI.ui.RemedyDetailFragment"
+        android:label="@string/nav_remedies">
+        <argument
+            android:name="pestKey"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.avikshit.PestAI.ui.SettingsFragment"
+        android:label="@string/nav_settings" />
+
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="com.avikshit.PestAI.ui.ScanFragment"
+        android:label="@string/nav_scan" />
 </navigation>

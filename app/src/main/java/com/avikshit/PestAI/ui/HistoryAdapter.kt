@@ -12,7 +12,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
+class HistoryAdapter(
+    private val onItemClick: ((ScanEntity) -> Unit)? = null
+) : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
     private val items = mutableListOf<ScanEntity>()
     private val dateFormatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
@@ -29,7 +31,7 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-        holder.bind(items[position], dateFormatter)
+        holder.bind(items[position], dateFormatter, onItemClick)
     }
 
     override fun getItemCount(): Int = items.size
@@ -40,7 +42,7 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
         private val timestampTextView: TextView = itemView.findViewById(R.id.tvTimestamp)
         private val confidencePill: TextView = itemView.findViewById(R.id.tvConfidencePill)
 
-        fun bind(scanEntity: ScanEntity, formatter: SimpleDateFormat) {
+        fun bind(scanEntity: ScanEntity, formatter: SimpleDateFormat, onItemClick: ((ScanEntity) -> Unit)?) {
             val ctx = itemView.context
             val isCritical = isCriticalPest(scanEntity.pestName)
             leftEdgeBar.setBackgroundColor(
@@ -49,6 +51,7 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
             pestNameTextView.text = scanEntity.pestName
             timestampTextView.text = ctx.getString(R.string.history_item_time, formatter.format(Date(scanEntity.timestamp)))
             confidencePill.text = "${(scanEntity.confidence * 100).toInt()}%"
+            itemView.setOnClickListener { onItemClick?.invoke(scanEntity) }
         }
 
         private fun isCriticalPest(pestName: String): Boolean {
