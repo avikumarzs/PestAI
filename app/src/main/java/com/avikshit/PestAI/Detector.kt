@@ -15,8 +15,6 @@ import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.BufferedReader
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -34,7 +32,6 @@ class Detector(
     private var emptyFrameCount = 0
 
     private val penalizedZones = mutableListOf<RectF>()
-    private var currentBitmap: Bitmap? = null
 
     private var interpreter: Interpreter
     private var labels = mutableListOf<String>()
@@ -137,7 +134,6 @@ class Detector(
 
         // 1. Crop the raw camera feed to a square first
         val squareBitmap = cropToSquare(frame)
-        this.currentBitmap = squareBitmap
 
         // 2. Scale the perfectly square image down to match the YOLO model
         val resizedBitmap = Bitmap.createScaledBitmap(squareBitmap, tensorWidth, tensorHeight, false)
@@ -175,32 +171,12 @@ class Detector(
         if (tappedBox != null) {
             penalizedZones.add(RectF(tappedBox.x1, tappedBox.y1, tappedBox.x2, tappedBox.y2))
 
-            currentBitmap?.let {
-                saveBitmapForHardNegativeMining(it)
-            }
-
             // Remove the penalized box from the list of stable boxes
             lastStableBoxes = lastStableBoxes.filter { it != tappedBox }
 
             // Notify the listener to update the UI instantly
             val pestCounts = lastStableBoxes.groupingBy { it.clsName }.eachCount()
             detectorListener.onDetect(lastStableBoxes, 0, pestCounts)
-        }
-    }
-
-    private fun saveBitmapForHardNegativeMining(bitmap: Bitmap) {
-        try {
-            val folder = File(context.getExternalFilesDir(null), "false_positives")
-            if (!folder.exists()) {
-                folder.mkdirs()
-            }
-            val fileName = "hard_negative_${System.currentTimeMillis()}.png"
-            val file = File(folder, fileName)
-            FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
         }
     }
 
