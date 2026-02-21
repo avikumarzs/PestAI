@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">PestAI</string>
     <string name="gpu">GPU</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_scan">Scan</string>
+    <string name="nav_history">History</string>
+    <string name="home_greeting">Hello, Farmer</string>
+    <string name="home_subtitle">Monitor your crops with AI-powered pest detection.</string>
+    <string name="recent_scans_title">Recent Scans</string>
+    <string name="recent_scans_default">No scans available yet.</string>
+    <string name="recent_scans_count">Total scans saved: %1$d</string>
+    <string name="start_scan">Start Scan</string>
+    <string name="inference_time_default">0ms</string>
+    <string name="history_title">Scan History</string>
+    <string name="history_empty">No scan history yet. Run a scan to populate this list.</string>
+    <string name="history_warning_icon_content_description">Warning icon</string>
+    <string name="history_item_time">Detected at: %1$s</string>
 </resources>
