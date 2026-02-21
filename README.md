@@ -1,4 +1,4 @@
-# 🐛 PEstAI: Real-Time Edge AI Detection
+# 🐛 PestAI: Real-Time Edge AI Detection
 
 PEstAI is a high-performance Android application optimized for real-time edge computing. It provides a lag-free object detection pipeline using advanced vision models running entirely on-device via TensorFlow Lite.
 
