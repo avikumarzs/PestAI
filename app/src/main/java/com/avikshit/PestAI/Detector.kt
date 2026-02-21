@@ -2,6 +2,7 @@ package com.avikshit.PestAI
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.RectF
 import android.os.SystemClock
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
@@ -14,6 +15,8 @@ import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.BufferedReader
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -29,6 +32,9 @@ class Detector(
     // Anti-Blink Engine Memory
     private var lastStableBoxes = listOf<BoundingBox>()
     private var emptyFrameCount = 0
+
+    private val penalizedZones = mutableListOf<RectF>()
+    private var currentBitmap: Bitmap? = null
 
     private var interpreter: Interpreter
     private var labels = mutableListOf<String>()
@@ -131,6 +137,7 @@ class Detector(
 
         // 1. Crop the raw camera feed to a square first
         val squareBitmap = cropToSquare(frame)
+        this.currentBitmap = squareBitmap
 
         // 2. Scale the perfectly square image down to match the YOLO model
         val resizedBitmap = Bitmap.createScaledBitmap(squareBitmap, tensorWidth, tensorHeight, false)
@@ -159,6 +166,43 @@ class Detector(
         // Send the boxes, the time, AND the counts to the frontend
         detectorListener.onDetect(bestBoxes, inferenceTime, pestCounts)
     }
+    
+    fun penalizeDetection(x: Float, y: Float) {
+        val tappedBox = lastStableBoxes.find { box ->
+            x >= box.x1 && x <= box.x2 && y >= box.y1 && y <= box.y2
+        }
+
+        if (tappedBox != null) {
+            penalizedZones.add(RectF(tappedBox.x1, tappedBox.y1, tappedBox.x2, tappedBox.y2))
+
+            currentBitmap?.let {
+                saveBitmapForHardNegativeMining(it)
+            }
+
+            // Remove the penalized box from the list of stable boxes
+            lastStableBoxes = lastStableBoxes.filter { it != tappedBox }
+
+            // Notify the listener to update the UI instantly
+            val pestCounts = lastStableBoxes.groupingBy { it.clsName }.eachCount()
+            detectorListener.onDetect(lastStableBoxes, 0, pestCounts)
+        }
+    }
+
+    private fun saveBitmapForHardNegativeMining(bitmap: Bitmap) {
+        try {
+            val folder = File(context.getExternalFilesDir(null), "false_positives")
+            if (!folder.exists()) {
+                folder.mkdirs()
+            }
+            val fileName = "hard_negative_${System.currentTimeMillis()}.png"
+            val file = File(folder, fileName)
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 
     private fun bestBox(array: FloatArray, bitmap: Bitmap) : List<BoundingBox>? {
 
@@ -183,9 +227,14 @@ class Detector(
                 val cy = array[c + numElements]
                 val w = array[c + numElements * 2]
                 val h = array[c + numElements * 3]
-                
+
                 var finalConf = maxConf
                 if (!isHabitat(bitmap, cx, cy, w, h)) { finalConf *= 0.5F }
+
+                val isPenalized = penalizedZones.any { it.contains(cx, cy) }
+                if (isPenalized) {
+                    finalConf = 0.0F
+                }
 
                 if (finalConf > CONFIDENCE_THRESHOLD) {
                     val clsName = labels[maxIdx]
@@ -297,7 +346,7 @@ private fun isHabitat(bitmap: Bitmap, cx: Float, cy: Float, w: Float, h: Float):
     val pixelCy = (cy * bitmap.height).toInt()
     val pixelW = (w * bitmap.width).toInt()
     val pixelH = (h * bitmap.height).toInt()
-    val offset = 15 
+    val offset = 15
     val points = listOf(
         Pair(pixelCx, (pixelCy - pixelH / 2 - offset).coerceIn(0, bitmap.height - 1)),
         Pair(pixelCx, (pixelCy + pixelH / 2 + offset).coerceIn(0, bitmap.height - 1)),
@@ -311,7 +360,7 @@ private fun isHabitat(bitmap: Bitmap, cx: Float, cy: Float, w: Float, h: Float):
         val g = (color shr 8) and 0xFF
         val b = color and 0xFF
         val isGreen = g > r && g > b
-        val isSoil = r > g && g > b && r < 180 
+        val isSoil = r > g && g > b && r < 180
         if (isGreen || isSoil) habitatScore++
     }
     return habitatScore >= 1
