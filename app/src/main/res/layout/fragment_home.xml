@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_secondary">
+    android:background="@color/kr_background">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -23,7 +23,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/home_greeting"
                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/kr_text_primary"
+                android:fontFamily="sans-serif-medium" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/home_subtitle"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textColor="@color/text_secondary" />
+                android:textColor="@color/kr_text_secondary" />
 
             <!-- Weather & Spray Card -->
             <com.google.android.material.card.MaterialCardView
@@ -39,9 +40,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:cardBackgroundColor="@color/card_white"
+                app:cardBackgroundColor="@color/kr_card_background"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardElevation="4dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -55,7 +56,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/weather_card_title"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/kr_text_primary"
+                        android:fontFamily="sans-serif-medium"/>
 
                     <TextView
                         android:id="@+id/tvWeatherState"
@@ -64,18 +66,18 @@
                         android:layout_marginTop="8dp"
                         android:text="@string/weather_clear"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/kr_text_primary" />
 
                     <TextView
                         android:id="@+id/tvWeatherWarning"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="@color/banner_light_green"
+                        android:background="@color/kr_green_light"
                         android:padding="12dp"
                         android:text="@string/weather_rain_warning"
                         android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/kr_text_primary"
                         android:visibility="gone" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -93,9 +95,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    app:cardBackgroundColor="@color/card_white"
+                    app:cardBackgroundColor="@color/kr_card_background"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="4dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
@@ -109,14 +111,15 @@
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                            android:textColor="@color/critical_red" />
+                            android:textColor="@color/kr_red_critical"
+                            android:fontFamily="sans-serif-medium"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:text="@string/metric_critical_threats"
                             android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="@color/kr_text_secondary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -125,9 +128,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    app:cardBackgroundColor="@color/card_white"
+                    app:cardBackgroundColor="@color/kr_card_background"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="4dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
@@ -141,14 +144,15 @@
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                            android:textColor="@color/primary_emerald" />
+                            android:textColor="@color/kr_green_primary"
+                            android:fontFamily="sans-serif-medium"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:text="@string/metric_total_scans"
                             android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="@color/kr_text_secondary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -168,7 +172,7 @@
         android:layout_margin="20dp"
         app:srcCompat="@android:drawable/ic_menu_camera"
         app:tint="@color/white"
-        app:backgroundTint="@color/primary_emerald"
+        app:backgroundTint="@color/kr_green_primary"
         android:contentDescription="@string/launch_rover_scanner" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

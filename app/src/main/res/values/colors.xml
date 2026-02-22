@@ -4,27 +4,28 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Khet Rakshak - Material 3 high-contrast -->
+    <!-- Khet Rakshak - New Palette -->
+    <color name="kr_green_primary">#2E7D32</color>
+    <color name="kr_green_light">#E8F5E9</color>
+    <color name="kr_background">#F5F5F5</color>
+    <color name="kr_text_primary">#212121</color>
+    <color name="kr_text_secondary">#757575</color>
+    <color name="kr_card_background">#FFFFFF</color>
+    <color name="kr_red_critical">#C62828</color>
+
+    <!-- Original colors -->
     <color name="background_primary">#FFFFFF</color>
     <color name="background_secondary">#F8F9FA</color>
     <color name="primary_emerald">#1B5E20</color>
     <color name="text_primary">#1A1A1A</color>
     <color name="text_secondary">#424242</color>
-
-    <!-- Alerts -->
     <color name="critical_red">#D32F2F</color>
     <color name="warning_yellow">#FBC02D</color>
-
-    <!-- Card & surfaces -->
     <color name="card_white">#FFFFFF</color>
     <color name="banner_light_green">#E8F5E9</color>
-
-    <!-- Scan / camera (dark UI) -->
     <color name="bounding_box_color">#1B5E20</color>
     <color name="gray">#616161</color>
     <color name="orange">#F93</color>
-
-    <!-- IoT status -->
     <color name="status_green">#2E7D32</color>
     <color name="status_yellow">#F9A825</color>
 </resources>
