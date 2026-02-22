@@ -1,30 +1,48 @@
-# 🐛 PestAI: Real-Time Edge AI Detection
+# 🐛 PestAI: Contextual Edge-AI for Crop Protection
 
-PEstAI is a high-performance Android application optimized for real-time edge computing. It provides a lag-free object detection pipeline using advanced vision models running entirely on-device via TensorFlow Lite.
+Farmers lose billions of dollars to crop pests every year, but identifying the exact species before the infestation spreads is incredibly difficult. Most farmers don't have entomologists on speed dial, and spraying chemicals at the wrong time leads to environmental damage and financial loss.
 
-## 🌟 Implemented Features
+**PestAI** is a real-time, edge-computing mobile tool that puts an agricultural expert in the farmer's pocket. It combines on-device machine learning with dynamic weather heuristics to not only detect pests but also advise on the exact right time to treat the crop.
 
-* **Dual-Model Support:** Ships with both **YOLOv8 Nano** and **YOLOv11 Nano** models pre-loaded in the project assets, allowing for flexible testing and deployment.
-* **Hybrid Quantization Engine:** The TFLite interpreter is configured to perfectly handle Float32 input/output tensors while the models utilize Int8 quantized internal weights. This keeps the app size minimal (~3MB per model) without crashing from data type mismatches.
-* **Lag-Free Camera Preview:** Implements a decoupled CameraX architecture. The inference engine uses a custom "Busy-Flag" backpressure strategy, instantly dropping frames when the CPU is busy. This guarantees the user's camera feed remains at a fluid 30 FPS regardless of the device's processing power.
-* **Strict Resolution Pipeline:** Pre-processes the camera feed into a strict 640x640 normalized float array (0.0f - 1.0f) to match the exact training parameters of the YOLO models.
+---
 
-## 🏗️ Technical Architecture
+## ✨ Spray Viability Decision Engine
+* **Contextual Weather Warnings:** Issues a "Do Not Spray" warning if rain, high wind, or extreme temperatures are detected, preventing chemical runoff and saving farmers money.
+* **Dynamic Location Services:** Automatically requests the user's location to provide hyper-local, accurate weather data for spray recommendations.
+* **Live Weather Dashboard:** The home screen displays the current location, temperature, and wind speed, giving farmers a complete picture of the environmental conditions before treating crops.
 
-1. **Producer:** `androidx.camera.view.PreviewView` captures frames constantly.
-2. **Filter:** The `ImageAnalysis.Analyzer` checks the inference status. If the model is currently processing a frame, the new frame is closed and discarded immediately to prevent CPU queuing and thermal throttling.
-3. **Consumer:** The `Detector.kt` processes the 640x640 frame on a dedicated background `Executor`.
+---
+
+## 🧠 Advanced AI/ML Architecture
+We didn't just wrap a model in an app; we engineered a production-grade, context-aware pipeline optimized for low-end mobile hardware.
+
+* **Active Learning Feedback Loop:** Users can tap on an incorrect bounding box to instantly hide it. The AI adds that coordinate to a "penalized zone" for the rest of the session, preventing the same false-positive from recurring.
+* **Context-Aware Habitat Filter:** An intelligent heuristic filter that probes the pixels immediately outside a bounding box. If the background isn't mathematically detected as green leaves or brown soil, the model's confidence is dynamically penalized to reduce false positives on unnatural surfaces.
+* **Anti-Flicker Engine:** A custom 3-frame memory grace period integrated into the Non-Maximum Suppression (NMS) logic that prevents bounding boxes from blinking in and out of existence during camera shake, providing a highly stable user experience.
+* **Zero-Distortion Cropping:** Prevents 16:9 camera feeds from being squashed into 1:1 AI tensors, preserving real-world geometry for higher inference accuracy.
+
+---
 
 ## 🛠️ Tech Stack
-
 * **Language:** Kotlin
-* **Framework:** Android SDK (API 24+)
-* **Machine Learning:** TensorFlow Lite 2.14.0
-* **Vision System:** AndroidX CameraX
+* **Machine Learning:** TensorFlow Lite (YOLOv8 Nano)
+* **Networking:** Retrofit and Gson for communicating with the OpenWeatherMap API.
+* **Asynchronous Operations:** Kotlin Coroutines and `lifecycleScope` for managing background tasks and API calls without blocking the UI thread.
+* **Camera:** AndroidX CameraX for a modern, lifecycle-aware edge-computing camera implementation.
+* **Location:** Google Play Services Fused Location Provider API.
+* **UI Framework:** Modern Android UI with Material Design components, ConstraintLayout, and CoordinatorLayout.
+* **Architecture:** Single-Activity architecture using the AndroidX Navigation Component with Fragments.
 
-## 🚀 Getting Started
+---
 
-1. Clone the repository to your local machine.
-2. Open the project in **Android Studio**.
-3. *(No model download required - `yolov8n.tflite` and `yolov11n.tflite` are already included in the `src/main/assets/` folder).*
-4. Sync Gradle and click **Run** to deploy to your Android device.
+## ⚙️ Installation & Setup
+
+1. **Clone the repository:**
+    git clone https://github.com/YOUR_USERNAME/PestAI.git
+
+2. **Open in Android Studio:** Ensure you have the latest stable version installed.
+
+3. **Add your API Key:** * Obtain a free API key from OpenWeatherMap.
+    * Place your key securely in your project.
+
+4. **Build and Run:** Connect a physical Android device via USB debugging for the best camera and ML performance.
