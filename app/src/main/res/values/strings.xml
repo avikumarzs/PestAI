@@ -7,7 +7,8 @@
     <string name="nav_history">History</string>
     <string name="nav_remedies">Remedies</string>
     <string name="nav_settings">Settings</string>
-    <string name="home_greeting">Hello, Farmer</string>
+    <string name="home_greeting">Hi, Farmer</string>
+    <string name="scan_now">Scan Now</string>
     <string name="home_subtitle">Your farm command center.</string>
     <string name="recent_scans_title">Recent Scans</string>
     <string name="recent_scans_default">No scans available yet.</string>
@@ -32,15 +33,27 @@
     <string name="weather_rain_tomorrow">Rain Tomorrow</string>
     <string name="weather_rain_warning">Rain expected tomorrow. Recommendation: Delay chemical/organic spraying to prevent runoff.</string>
     <string name="weather_clear">Clear</string>
+    <string name="weather_retry">Retry weather</string>
+    <string name="weather_fetching">Fetching…</string>
     <string name="devices_title">Rover Telemetry</string>
+    <string name="dht11_sensor_title">DHT11 Sensor</string>
     <string name="dht11_temperature">Temperature</string>
     <string name="dht11_humidity">Humidity</string>
     <string name="soil_moisture">Soil Moisture</string>
     <string name="moisture_optimal">Optimal</string>
+    <string name="light_sensor">Light Sensor</string>
+    <string name="light_level">Light level</string>
+    <string name="light_lux">%1$d lux</string>
+    <string name="light_subtitle">Light intensity for plant growth.</string>
+    <string name="field_sensors_title">Field Sensors</string>
+    <string name="sensors_light_level">Light (LDR)</string>
+    <string name="sensors_distance">Distance</string>
+    <string name="sensors_disconnected">Disconnected from sensors</string>
     <string name="remedy_see_detail">View remedy</string>
     <string name="remedy_ingredients">Ingredients</string>
     <string name="remedy_steps">Steps</string>
     <string name="remedy_effectiveness">Effectiveness</string>
     <string name="remedy_cost">Cost</string>
+    <string name="remedy_not_implemented">Remedy not yet implemented for this pest.</string>
     <string name="settings">Settings</string>
 </resources>

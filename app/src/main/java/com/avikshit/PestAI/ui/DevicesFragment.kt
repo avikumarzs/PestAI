@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import com.avikshit.PestAI.R
 
 /**
- * Rover telemetry dashboard: DHT11 (temperature, humidity) and Soil Moisture.
+ * Rover telemetry dashboard: DHT11 (temperature, humidity) and Light sensor.
  * Values are mock; can be replaced with real BLE/HTTP data later.
  */
 class DevicesFragment : Fragment(R.layout.fragment_devices) {

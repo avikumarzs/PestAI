@@ -40,7 +40,7 @@ class RemedyDetailFragment : Fragment(R.layout.fragment_remedy_detail) {
             tvIngredients.isVisible = false
             tvSteps.isVisible = false
             tvGenericMessage.isVisible = true
-            tvGenericMessage.text = "No specific remedy in database for this pest. Check general integrated pest management practices."
+            tvGenericMessage.text = getString(R.string.remedy_not_implemented)
         }
     }
 }

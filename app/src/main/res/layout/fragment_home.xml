@@ -4,245 +4,410 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/kr_background">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/kr_background"
-        app:elevation="0dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+    android:background="@color/bg_sage">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingBottom="100dp">
 
-            <TextView
-                android:id="@+id/tvGreeting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home_greeting"
-                android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                android:textColor="@color/kr_text_primary"
-                android:fontFamily="sans-serif-medium" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/home_subtitle"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textColor="@color/kr_text_secondary" />
-
-            <!-- Weather & Spray Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardWeather"
+            <!-- Header: gradient + Hi Farmer + plant icon -->
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardBackgroundColor="@color/kr_card_background"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:strokeWidth="0dp">
+                android:background="@drawable/bg_header_gradient"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:paddingTop="28dp"
+                android:paddingBottom="32dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/tvWeatherState"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/weather_card_title"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:textColor="@color/kr_text_primary"
-                        android:fontFamily="sans-serif-medium"/>
-
-                    <TextView
-                        android:id="@+id/tvLocation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Fetching location..."
-                        android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="@color/kr_text_secondary"/>
-
-                    <!-- Weather Metrics -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tvTemperature"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="--°C"
-                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                                android:textColor="@color/kr_text_primary" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Temperature"
-                                android:textAppearance="?attr/textAppearanceBodySmall"
-                                android:textColor="@color/kr_text_secondary"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tvWindSpeed"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="-- km/h"
-                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                                android:textColor="@color/kr_text_primary" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Wind Speed"
-                                android:textAppearance="?attr/textAppearanceBodySmall"
-                                android:textColor="@color/kr_text_secondary"/>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvWeatherWarning"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/kr_green_light"
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_circle_avatar"
                         android:padding="12dp"
-                        android:text="@string/weather_rain_warning"
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:textColor="@color/kr_text_primary"
-                        android:visibility="gone" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        android:src="@drawable/ic_plant_24"
+                        android:contentDescription="@null" />
 
-            <!-- Quick Stats -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/tvGreeting"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_greeting"
+                            android:textColor="@color/text_heading"
+                            android:textSize="28sp"
+                            android:fontFamily="sans-serif-black"
+                            android:letterSpacing="0.02" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/home_subtitle"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="15sp"
+                            android:fontFamily="sans-serif" />
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="24dp">
 
+                <!-- Weather & Spray Card - floating white, soft large shadow -->
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
+                    android:id="@+id/cardWeather"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardBackgroundColor="@color/kr_card_background"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/card_white"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="16dp"
+                    app:strokeWidth="0dp">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="140dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="24dp">
+
+                            <TextView
+                                android:id="@+id/tvWeatherState"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/weather_card_title"
+                                android:textColor="@color/text_primary"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-medium" />
+
+                            <TextView
+                                android:id="@+id/tvLocation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="@string/weather_fetching"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="14sp" />
+
+                            <!-- Weather metrics row -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:id="@+id/tvTemperature"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="--°C"
+                                        android:textColor="@color/text_primary"
+                                        android:textSize="28sp"
+                                        android:fontFamily="sans-serif-medium" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/dht11_temperature"
+                                        android:textColor="@color/text_secondary"
+                                        android:textSize="13sp" />
+                                </LinearLayout>
+
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="40dp"
+                                    android:background="@color/text_secondary"
+                                    android:alpha="0.3" />
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:id="@+id/tvHumidity"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="--%"
+                                        android:textColor="@color/text_primary"
+                                        android:textSize="28sp"
+                                        android:fontFamily="sans-serif-medium" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/dht11_humidity"
+                                        android:textColor="@color/text_secondary"
+                                        android:textSize="13sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <!-- Loading indicator (shown while fetching) -->
+                            <ProgressBar
+                                android:id="@+id/weatherProgress"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:indeterminateTint="@color/terracotta"
+                                android:visibility="gone" />
+
+                            <TextView
+                                android:id="@+id/tvWeatherWarning"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:background="@drawable/bg_weather_message"
+                                android:padding="14dp"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:visibility="gone" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnWeatherRetry"
+                                style="@style/Widget.Material3.Button.TextButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:text="@string/weather_retry"
+                                android:textColor="@color/terracotta" />
+                        </LinearLayout>
+                    </FrameLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Field Sensors card: LDR + Distance (live from local server) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardFieldSensors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:cardBackgroundColor="@color/card_white"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="16dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
-                        <TextView
-                            android:id="@+id/tvMetricCritical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                            android:textColor="@color/kr_red_critical"
-                            android:fontFamily="sans-serif-medium"/>
+                        android:padding="24dp">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@string/metric_critical_threats"
-                            android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="@color/kr_text_secondary" />
+                            android:text="@string/field_sensors_title"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:fontFamily="sans-serif-medium" />
+
+                        <TextView
+                            android:id="@+id/tvSensorsDisconnected"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/sensors_disconnected"
+                            android:textColor="@color/critical_soft"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tvLdr"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="28sp"
+                                    android:fontFamily="sans-serif-medium" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/sensors_light_level"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="40dp"
+                                android:background="@color/text_secondary"
+                                android:alpha="0.3" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tvDistance"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="28sp"
+                                    android:fontFamily="sans-serif-medium" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/sensors_distance"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp" />
+                            </LinearLayout>
+                        </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
+                <!-- Pill-shaped stats -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardBackgroundColor="@color/kr_card_background"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    app:strokeWidth="0dp">
+                    android:layout_marginTop="28dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-                        <TextView
-                            android:id="@+id/tvMetricTotal"
-                            android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:cardBackgroundColor="@color/card_white"
+                        app:cardCornerRadius="28dp"
+                        app:cardElevation="16dp"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                            android:textColor="@color/kr_green_primary"
-                            android:fontFamily="sans-serif-medium"/>
-                        <TextView
-                            android:layout_width="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:paddingTop="18dp"
+                            android:paddingBottom="18dp">
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/ic_warning_24"
+                                android:contentDescription="@null" />
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="14dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tvMetricCritical"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textColor="@color/critical_soft"
+                                    android:textSize="22sp"
+                                    android:fontFamily="sans-serif-medium" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/metric_critical_threats"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        app:cardBackgroundColor="@color/card_white"
+                        app:cardCornerRadius="28dp"
+                        app:cardElevation="16dp"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@string/metric_total_scans"
-                            android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="@color/kr_text_secondary" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:paddingTop="18dp"
+                            android:paddingBottom="18dp">
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/ic_chart_24"
+                                android:contentDescription="@null" />
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="14dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tvMetricTotal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textColor="@color/success_soft"
+                                    android:textSize="22sp"
+                                    android:fontFamily="sans-serif-medium" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/metric_total_scans"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
             </LinearLayout>
-
-            <!-- Spacer before FAB area -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnLaunchScanner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="20dp"
-        app:srcCompat="@android:drawable/ic_menu_camera"
-        app:tint="@color/white"
-        app:backgroundTint="@color/kr_green_primary"
-        android:contentDescription="@string/launch_rover_scanner" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

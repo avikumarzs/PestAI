@@ -1,7 +1,9 @@
 package com.avikshit.PestAI.ui
 
 /**
- * Hardcoded remedy data for the 4 supported pests. Used by RemediesFragment and RemedyDetailFragment.
+ * Hardcoded remedy data for exactly 4 supported pests.
+ * Only Army_Fallworm, Paddy_Grasshopper, Field_Slug, Grain_Weevil have remedies.
+ * All other pests show: "Remedy not yet implemented for this pest."
  */
 data class RemedyItem(
     val pestKey: String,
@@ -17,61 +19,61 @@ data class RemedyItem(
 object RemedyData {
     private val remedies = listOf(
         RemedyItem(
-            pestKey = "fall_armyworm",
-            pestName = "Fall Armyworm",
+            pestKey = "army_fallworm",
+            pestName = "Army Fallworm",
             badgeCritical = true,
             remedyName = "Neem Oil Spray",
             effectiveness = "85%",
             cost = "Low",
             ingredients = "Neem oil, Water, Liquid soap",
-            steps = "Mix 2 tbsp neem oil with 1L water, add soap, spray on whorls."
+            steps = "Mix 2 tbsp neem oil with 1L water, add soap, spray on whorls and leaves."
         ),
         RemedyItem(
-            pestKey = "aphids",
-            pestName = "Aphids",
+            pestKey = "paddy_grasshopper",
+            pestName = "Paddy Grasshopper",
             badgeCritical = false,
             remedyName = "Garlic-Chili Spray",
             effectiveness = "78%",
             cost = "Very Low",
             ingredients = "Garlic, Hot chili, Water",
-            steps = "Blend garlic and chili with water, strain, spray on leaves."
+            steps = "Blend garlic and chili with water, strain, spray on paddy leaves early morning."
         ),
         RemedyItem(
-            pestKey = "leafhoppers",
-            pestName = "Leafhoppers",
+            pestKey = "field_slug",
+            pestName = "Field Slug",
             badgeCritical = false,
-            remedyName = "Wood Ash",
-            effectiveness = "70%",
-            cost = "Free",
-            ingredients = "Fine wood ash",
-            steps = "Dust fine wood ash evenly over the plant leaves early in the morning."
+            remedyName = "Beer Traps & Diatomaceous Earth",
+            effectiveness = "75%",
+            cost = "Low",
+            ingredients = "Beer, shallow dishes, Diatomaceous earth",
+            steps = "Place beer in shallow dishes near plants; dust diatomaceous earth around base. Reapply after rain."
         ),
         RemedyItem(
-            pestKey = "stem_borer",
-            pestName = "Stem Borer",
+            pestKey = "grain_weevil",
+            pestName = "Grain Weevil",
             badgeCritical = true,
-            remedyName = "Bacillus thuringiensis (Bt)",
-            effectiveness = "90%",
+            remedyName = "Hermetic Storage & Neem",
+            effectiveness = "88%",
             cost = "Medium",
-            ingredients = "Bt powder, Water",
-            steps = "Mix according to package, spray at the base and stems."
+            ingredients = "Hermetic bags, Neem leaves or neem oil",
+            steps = "Store grain in hermetic bags. Add neem leaves or apply neem oil to storage area before filling."
         )
     )
+
+    /** Exactly 4 supported pest keys. */
+    val SUPPORTED_PEST_KEYS = setOf("army_fallworm", "paddy_grasshopper", "field_slug", "grain_weevil")
 
     fun all(): List<RemedyItem> = remedies
 
     fun findByKey(pestKey: String): RemedyItem? =
         remedies.find { it.pestKey.equals(pestKey, ignoreCase = true) }
 
-    /** Maps a scan/history pest name to a known pestKey, or returns raw name for generic handling. */
+    fun isSupportedPest(pestKey: String): Boolean =
+        pestKey.lowercase().trim() in SUPPORTED_PEST_KEYS
+
+    /** Maps a scan/history pest name to pestKey. Only the 4 supported pests map to a key; others return as-is for fallback handling. */
     fun normalizePestKey(pestName: String): String {
-        val lower = pestName.lowercase().trim()
-        return when {
-            lower.contains("armyworm") || lower.contains("fall armyworm") -> "fall_armyworm"
-            lower.contains("aphid") -> "aphids"
-            lower.contains("leafhopper") -> "leafhoppers"
-            lower.contains("stem borer") || (lower.contains("borer") && !lower.contains("army")) -> "stem_borer"
-            else -> pestName
-        }
+        val key = pestName.replace(" ", "_").lowercase().trim()
+        return if (key in SUPPORTED_PEST_KEYS) key else pestName
     }
 }

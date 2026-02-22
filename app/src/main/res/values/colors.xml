@@ -1,31 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Khet Rakshak - New Palette -->
+    <!-- Organic modern palette -->
+    <color name="bg_cream">#FAF9F6</color>
+    <color name="bg_sage">#E8EDDF</color>
+    <color name="forest_green">#1B4D3E</color>
+    <color name="forest_green_soft">#2D5A4A</color>
+    <color name="terracotta">#C75B39</color>
+    <color name="terracotta_light">#E8A598</color>
+    <color name="card_white">#FFFFFF</color>
+    <color name="text_primary">#1B4D3E</color>
+    <color name="text_heading">#152A23</color>
+    <color name="forest_green_10">#1A1B4D3E</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="critical_soft">#DC6B5A</color>
+    <color name="success_soft">#2D6A4F</color>
+
+    <!-- Header gradient (end color) -->
+    <color name="header_gradient_end">#E8EDE6</color>
+
+    <!-- Legacy / scan / semantic (unchanged for backend) -->
     <color name="kr_green_primary">#2E7D32</color>
     <color name="kr_green_light">#E8F5E9</color>
-    <color name="kr_background">#F5F5F5</color>
-    <color name="kr_text_primary">#212121</color>
-    <color name="kr_text_secondary">#757575</color>
+    <color name="kr_background">#FAF9F6</color>
+    <color name="kr_text_primary">#1B4D3E</color>
+    <color name="kr_text_secondary">#6B7280</color>
     <color name="kr_card_background">#FFFFFF</color>
-    <color name="kr_red_critical">#C62828</color>
-
-    <!-- Original colors -->
+    <color name="kr_red_critical">#DC6B5A</color>
     <color name="background_primary">#FFFFFF</color>
-    <color name="background_secondary">#F8F9FA</color>
-    <color name="primary_emerald">#1B5E20</color>
-    <color name="text_primary">#1A1A1A</color>
-    <color name="text_secondary">#424242</color>
-    <color name="critical_red">#D32F2F</color>
-    <color name="warning_yellow">#FBC02D</color>
-    <color name="card_white">#FFFFFF</color>
+    <color name="background_secondary">#FAF9F6</color>
+    <color name="primary_emerald">#1B4D3E</color>
+    <color name="critical_red">#DC6B5A</color>
+    <color name="warning_yellow">#E9C46A</color>
     <color name="banner_light_green">#E8F5E9</color>
-    <color name="bounding_box_color">#1B5E20</color>
-    <color name="gray">#616161</color>
-    <color name="orange">#F93</color>
-    <color name="status_green">#2E7D32</color>
-    <color name="status_yellow">#F9A825</color>
+    <color name="bounding_box_color">#1B4D3E</color>
+    <color name="gray">#6B7280</color>
+    <color name="orange">#C75B39</color>
+    <color name="status_green">#2D6A4F</color>
+    <color name="status_yellow">#E9C46A</color>
 </resources>

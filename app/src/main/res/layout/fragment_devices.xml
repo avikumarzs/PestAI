@@ -45,7 +45,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="DHT11 Sensor"
+                        android:text="@string/dht11_sensor_title"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:textColor="@color/text_primary" />
                     <View
@@ -105,7 +105,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Soil Moisture Sensor Card -->
+        <!-- Light Sensor Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/soil_moisture"
+                        android:text="@string/light_sensor"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:textColor="@color/text_primary" />
                     <View
@@ -140,17 +140,18 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tvLightLevel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="40% - Optimal"
+                    android:text="450 lux"
                     android:textAppearance="?attr/textAppearanceHeadlineSmall"
                     android:textColor="@color/text_primary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Moisture level within ideal range for most crops."
+                    android:text="@string/light_subtitle"
                     android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textColor="@color/text_secondary" />
             </LinearLayout>

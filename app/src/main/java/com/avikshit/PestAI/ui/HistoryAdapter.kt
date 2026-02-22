@@ -55,8 +55,8 @@ class HistoryAdapter(
         }
 
         private fun isCriticalPest(pestName: String): Boolean {
-            val lower = pestName.lowercase()
-            return lower.contains("armyworm") || lower.contains("stem borer") || lower.contains("borer")
+            val key = pestName.replace(" ", "_").lowercase()
+            return key == "army_fallworm" || key == "grain_weevil"
         }
     }
 }

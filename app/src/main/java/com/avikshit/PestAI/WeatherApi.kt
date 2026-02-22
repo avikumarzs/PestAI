@@ -1,9 +1,11 @@
 package com.avikshit.PestAI
 
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
 
 // Data models to match the JSON structure from OpenWeatherMap
 data class WeatherResponse(
@@ -31,8 +33,14 @@ interface WeatherApi {
         private const val BASE_URL = "https://api.openweathermap.org/"
 
         fun create(): WeatherApi {
+            val okHttpClient = OkHttpClient.Builder()
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build()
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(WeatherApi::class.java)

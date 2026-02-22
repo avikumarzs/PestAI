@@ -6,12 +6,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.avikshit.PestAI.R
 import com.avikshit.PestAI.SprayEngine
@@ -19,10 +17,15 @@ import com.avikshit.PestAI.WeatherApi
 import com.avikshit.PestAI.data.AppDatabase
 import com.avikshit.PestAI.data.ScanRepository
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
+import android.widget.ProgressBar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.concurrent.Executors
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -34,7 +37,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     // IMPORTANT: Replace with your actual API key
-    private val WEATHER_API_KEY = "7f0a84a0ced0506d40e5485da6acbf09"
+    private val WEATHER_API_KEY = "672e0ac8f2a6506c03115e76033b8dd1"
+
+    // Local Arduino/Flask sensor server (cleartext; ensure phone and laptop on same network)
+    private val SENSOR_BASE_URL = "http://172.24.239.67:5000"
+
+    private var sensorPollingJob: Job? = null
+    private val gson = Gson()
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -64,24 +73,88 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         scanRepository = ScanRepository(AppDatabase.getInstance(requireContext()).scanDao())
 
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        toolbar.inflateMenu(R.menu.home_menu)
-        toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.settingsFragment -> {
-                    findNavController().navigate(R.id.action_home_to_settings)
-                    true
-                }
-                else -> false
-            }
-        }
-
-        view.findViewById<FloatingActionButton>(R.id.btnLaunchScanner).setOnClickListener {
-            findNavController().navigate(R.id.scanFragment)
+        view.findViewById<View>(R.id.btnWeatherRetry).setOnClickListener {
+            setWeatherLoading(true)
+            fetchLocationAndWeather()
         }
 
         loadDashboard(view)
         checkLocationPermissions()
+        startSensorPolling()
+    }
+
+    override fun onDestroyView() {
+        sensorPollingJob?.cancel()
+        sensorPollingJob = null
+        super.onDestroyView()
+    }
+
+    private fun startSensorPolling() {
+        sensorPollingJob?.cancel()
+        sensorPollingJob = lifecycleScope.launch {
+            while (true) {
+                fetchSensorData()
+                delay(2000L)
+            }
+        }
+    }
+
+    private suspend fun fetchSensorData() {
+        val result = withContext(Dispatchers.IO) {
+            try {
+                val url = URL("$SENSOR_BASE_URL/data")
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "GET"
+                conn.connectTimeout = 3000
+                conn.readTimeout = 3000
+                val code = conn.responseCode
+                if (code != HttpURLConnection.HTTP_OK) {
+                    return@withContext null
+                }
+                val text = conn.inputStream.bufferedReader().use { it.readText() }
+                gson.fromJson(text, SensorData::class.java)
+            } catch (_: Exception) {
+                null
+            }
+        }
+        withContext(Dispatchers.Main) {
+            val tvTemp = view?.findViewById<TextView>(R.id.tvTemperature)
+            val tvHumidity = view?.findViewById<TextView>(R.id.tvHumidity)
+            val tvLdr = view?.findViewById<TextView>(R.id.tvLdr)
+            val tvDistance = view?.findViewById<TextView>(R.id.tvDistance)
+            val tvDisconnected = view?.findViewById<TextView>(R.id.tvSensorsDisconnected)
+            if (result != null) {
+                tvTemp?.text = formatSensorTemp(result.temperature)
+                tvHumidity?.text = formatSensorHumidity(result.humidity)
+                tvLdr?.text = result.ldr ?: "--"
+                tvDistance?.text = formatSensorDistance(result.distance)
+                tvDisconnected?.isVisible = false
+            } else {
+                tvTemp?.text = "--°C"
+                tvHumidity?.text = "--%"
+                tvLdr?.text = "--"
+                tvDistance?.text = "--"
+                tvDisconnected?.isVisible = true
+            }
+        }
+    }
+
+    private fun formatSensorTemp(s: String?): String {
+        if (s.isNullOrBlank()) return "--°C"
+        return try { "${s.trim()}°C" } catch (_: Exception) { "--°C" }
+    }
+
+    private fun formatSensorHumidity(s: String?): String {
+        if (s.isNullOrBlank()) return "--%"
+        return try { "${s.trim()}%" } catch (_: Exception) { "--%" }
+    }
+
+    private fun formatSensorDistance(s: String?): String {
+        if (s.isNullOrBlank()) return "--"
+        return try {
+            val d = s.trim().toDoubleOrNull()
+            if (d != null) "%.2f".format(d) else "--"
+        } catch (_: Exception) { "--" }
     }
 
     override fun onResume() {
@@ -106,7 +179,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val farmerName = sharedPreferences.getString("farmer_name", "")
         if (!farmerName.isNullOrEmpty()) {
-            greetingView?.text = "Hello, $farmerName"
+            greetingView?.text = "Hi, $farmerName"
         } else {
             greetingView?.text = getString(R.string.home_greeting)
         }
@@ -126,29 +199,52 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun fetchLocationAndWeather() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && 
-            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // If permissions are not granted, do not proceed.
-            return
-        }
-
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                checkSprayConditions(WEATHER_API_KEY, location.latitude, location.longitude)
-            } else {
-                val weatherWarning = view?.findViewById<TextView>(R.id.tvWeatherWarning)
-                weatherWarning?.text = "Could not retrieve location. Please ensure location is enabled on your device."
-                weatherWarning?.isVisible = true
-            }
-        }.addOnFailureListener {
-            val weatherWarning = view?.findViewById<TextView>(R.id.tvWeatherWarning)
-            weatherWarning?.text = "Failed to get location."
-            weatherWarning?.isVisible = true
+    private fun setWeatherLoading(loading: Boolean) {
+        val weatherState = view?.findViewById<TextView>(R.id.tvWeatherState)
+        val locationView = view?.findViewById<TextView>(R.id.tvLocation)
+        val weatherWarning = view?.findViewById<TextView>(R.id.tvWeatherWarning)
+        val btnRetry = view?.findViewById<View>(R.id.btnWeatherRetry)
+        val progress = view?.findViewById<ProgressBar>(R.id.weatherProgress)
+        if (loading) {
+            weatherState?.text = getString(R.string.weather_fetching)
+            locationView?.text = getString(R.string.weather_fetching)
+            weatherWarning?.isVisible = false
+            btnRetry?.isEnabled = false
+            progress?.isVisible = true
+        } else {
+            btnRetry?.isEnabled = true
+            progress?.isVisible = false
         }
     }
 
-    private fun checkSprayConditions(apiKey: String, lat: Double, lon: Double) {
+    private fun fetchLocationAndWeather() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            setWeatherLoading(false)
+            updateWeatherUIError("Location permission required", "Enable location in app settings.")
+            return
+        }
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    checkSprayConditions(WEATHER_API_KEY, location.latitude, location.longitude, null)
+                } else {
+                    val fallbackLat = 28.6139
+                    val fallbackLon = 77.2090
+                    checkSprayConditions(WEATHER_API_KEY, fallbackLat, fallbackLon, "Default location (India)")
+                }
+            }
+            .addOnFailureListener {
+                setWeatherLoading(false)
+                updateWeatherUIError("Location unavailable", "Could not get GPS. Using default location.")
+                val fallbackLat = 28.6139
+                val fallbackLon = 77.2090
+                checkSprayConditions(WEATHER_API_KEY, fallbackLat, fallbackLon, "Default location (India)")
+            }
+    }
+
+    private fun checkSprayConditions(apiKey: String, lat: Double, lon: Double, fallbackLocationName: String?) {
         lifecycleScope.launch {
             try {
                 val weatherApi = WeatherApi.create()
@@ -164,43 +260,54 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 withContext(Dispatchers.Main) {
                     val weatherState = view?.findViewById<TextView>(R.id.tvWeatherState)
                     val weatherWarning = view?.findViewById<TextView>(R.id.tvWeatherWarning)
-                    val temperatureView = view?.findViewById<TextView>(R.id.tvTemperature)
-                    val windSpeedView = view?.findViewById<TextView>(R.id.tvWindSpeed)
                     val locationView = view?.findViewById<TextView>(R.id.tvLocation)
-                    
-                    if (weatherState == null || weatherWarning == null || temperatureView == null || windSpeedView == null || locationView == null) return@withContext
-                    
-                    weatherState.text = "Ready for Spray?"
+
+                    if (weatherState == null || weatherWarning == null || locationView == null) return@withContext
+
+                    setWeatherLoading(false)
+                    weatherState.text = getString(R.string.weather_card_title)
                     weatherWarning.isVisible = true
                     weatherWarning.text = decision.message
-
-                    temperatureView.text = String.format("%.1f°C", tempCelsius)
-                    windSpeedView.text = String.format("%.1f km/h", windSpeedKmh)
-                    locationView.text = response.name
+                    locationView.text = fallbackLocationName ?: response.name
+                    // Temperature and humidity in this card are from local sensor (polled separately)
 
                     when (decision.status) {
                         SprayEngine.Status.PERFECT -> {
-                            weatherWarning.setBackgroundResource(R.color.kr_green_light)
-                            weatherWarning.setTextColor(ContextCompat.getColor(requireContext(), R.color.kr_text_primary))
+                            weatherWarning.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.kr_green_light))
+                            weatherWarning.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary))
                         }
                         SprayEngine.Status.WARNING -> {
-                            weatherWarning.setBackgroundResource(R.color.warning_yellow)
+                            weatherWarning.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.warning_yellow))
                             weatherWarning.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
                         }
                         SprayEngine.Status.DO_NOT_SPRAY -> {
-                            weatherWarning.setBackgroundResource(R.color.kr_red_critical)
+                            weatherWarning.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.critical_soft))
                             weatherWarning.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                         }
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val weatherWarning = view?.findViewById<TextView>(R.id.tvWeatherWarning)
-                    weatherWarning?.text = "Could not fetch weather data. Check connection or API key."
-                    weatherWarning?.isVisible = true
+                    setWeatherLoading(false)
+                    updateWeatherUIError("Weather unavailable", "Could not fetch weather data. Check connection or API key.")
                 }
             }
         }
+    }
+
+    private fun updateWeatherUIError(stateText: String, warningText: String) {
+        val weatherState = view?.findViewById<TextView>(R.id.tvWeatherState)
+        val weatherWarning = view?.findViewById<TextView>(R.id.tvWeatherWarning)
+        val temperatureView = view?.findViewById<TextView>(R.id.tvTemperature)
+        val humidityView = view?.findViewById<TextView>(R.id.tvHumidity)
+        val locationView = view?.findViewById<TextView>(R.id.tvLocation)
+
+        weatherState?.text = stateText
+        weatherWarning?.text = warningText
+        weatherWarning?.isVisible = true
+        temperatureView?.text = "--°C"
+        humidityView?.text = "--%"
+        locationView?.text = "Location unavailable"
     }
 
     private fun loadDashboard(rootView: View) {
@@ -219,7 +326,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun isCriticalPest(pestName: String): Boolean {
-        val lower = pestName.lowercase()
-        return lower.contains("armyworm") || lower.contains("stem borer") || lower.contains("borer")
+        val key = pestName.replace(" ", "_").lowercase()
+        return key == "army_fallworm" || key == "grain_weevil"
     }
 }
+
+/**
+ * JSON from local Flask server: {"temperature": "29.00", "humidity": "40.00", "ldr": "29", "distance": "0.00"}
+ */
+private data class SensorData(
+    val temperature: String? = null,
+    val humidity: String? = null,
+    val ldr: String? = null,
+    val distance: String? = null
+)

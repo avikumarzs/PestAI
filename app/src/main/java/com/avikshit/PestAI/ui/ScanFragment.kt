@@ -290,11 +290,13 @@ class ScanFragment : Fragment(R.layout.fragment_scan), Detector.DetectorListener
     }
 
     private fun remedyFor(pestName: String): String {
-        return when (pestName.lowercase()) {
-            "aphid" -> "Use neem oil spray and remove infected leaves."
-            "armyworm" -> "Use biological control and monitor crop edges."
-            "whitefly" -> "Introduce sticky traps and avoid over-fertilization."
-            else -> "Inspect affected area and apply integrated pest management."
+        val key = pestName.replace(" ", "_").lowercase()
+        return when (key) {
+            "army_fallworm" -> "Mix 2 tbsp neem oil with 1L water, add soap, spray on whorls and leaves."
+            "paddy_grasshopper" -> "Blend garlic and chili with water, strain, spray on paddy leaves early morning."
+            "field_slug" -> "Place beer in shallow dishes near plants; dust diatomaceous earth around base. Reapply after rain."
+            "grain_weevil" -> "Store grain in hermetic bags. Add neem leaves or apply neem oil to storage area before filling."
+            else -> "Remedy not yet implemented for this pest."
         }
     }
 
