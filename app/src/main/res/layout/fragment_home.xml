@@ -52,6 +52,7 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/tvWeatherState"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/weather_card_title"
@@ -60,19 +61,73 @@
                         android:fontFamily="sans-serif-medium"/>
 
                     <TextView
-                        android:id="@+id/tvWeatherState"
+                        android:id="@+id/tvLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/weather_clear"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="@color/kr_text_primary" />
+                        android:layout_marginTop="4dp"
+                        android:text="Fetching location..."
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/kr_text_secondary"/>
+
+                    <!-- Weather Metrics -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvTemperature"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--°C"
+                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                                android:textColor="@color/kr_text_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Temperature"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textColor="@color/kr_text_secondary"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvWindSpeed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="-- km/h"
+                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                                android:textColor="@color/kr_text_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Wind Speed"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textColor="@color/kr_text_secondary"/>
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvWeatherWarning"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="16dp"
                         android:background="@color/kr_green_light"
                         android:padding="12dp"
                         android:text="@string/weather_rain_warning"
