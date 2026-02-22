@@ -153,34 +153,6 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Recent Scans -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/recent_scans_title"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="@color/text_primary" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvRecentScans"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:nestedScrollingEnabled="false"
-                android:clipToPadding="false"
-                android:paddingBottom="16dp" />
-
-            <TextView
-                android:id="@+id/tvEmptyState"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/recent_scans_default"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textColor="@color/text_secondary"
-                android:visibility="gone" />
-
             <!-- Spacer before FAB area -->
             <View
                 android:layout_width="match_parent"
@@ -188,20 +160,15 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnLaunchScanner"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
-        android:paddingVertical="16dp"
-        android:text="@string/launch_rover_scanner"
-        android:textAllCaps="false"
-        android:textSize="18sp"
+        app:srcCompat="@android:drawable/ic_menu_camera"
+        app:tint="@color/white"
         app:backgroundTint="@color/primary_emerald"
-        app:cornerRadius="16dp"
-        app:icon="@android:drawable/ic_menu_camera"
-        app:iconGravity="textStart"
-        app:iconPadding="12dp"
-        app:iconTint="@color/white" />
+        android:contentDescription="@string/launch_rover_scanner" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

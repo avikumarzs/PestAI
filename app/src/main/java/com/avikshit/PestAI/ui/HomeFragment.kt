@@ -6,19 +6,16 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.avikshit.PestAI.R
 import com.avikshit.PestAI.data.AppDatabase
 import com.avikshit.PestAI.data.ScanRepository
-import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.Executors
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var scanRepository: ScanRepository
     private val ioExecutor = Executors.newSingleThreadExecutor()
-    private val historyAdapter = HistoryAdapter(null)
 
     /** Mock: true = show "Rain Tomorrow" and spray delay warning. */
     private val mockRainTomorrow = true
@@ -28,13 +25,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         scanRepository = ScanRepository(AppDatabase.getInstance(requireContext()).scanDao())
 
-        view.findViewById<MaterialButton>(R.id.btnLaunchScanner).setOnClickListener {
+        view.findViewById<FloatingActionButton>(R.id.btnLaunchScanner).setOnClickListener {
             findNavController().navigate(R.id.scanFragment)
         }
-
-        val rvRecentScans = view.findViewById<RecyclerView>(R.id.rvRecentScans)
-        rvRecentScans.layoutManager = LinearLayoutManager(requireContext())
-        rvRecentScans.adapter = historyAdapter
 
         setupWeatherCard(view)
         loadDashboard(view)
@@ -66,8 +59,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun loadDashboard(rootView: View) {
         val tvMetricCritical = rootView.findViewById<TextView>(R.id.tvMetricCritical)
         val tvMetricTotal = rootView.findViewById<TextView>(R.id.tvMetricTotal)
-        val rvRecentScans = rootView.findViewById<RecyclerView>(R.id.rvRecentScans)
-        val tvEmptyState = rootView.findViewById<TextView>(R.id.tvEmptyState)
 
         ioExecutor.execute {
             val scans = scanRepository.getAllScans()
@@ -76,10 +67,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             activity?.runOnUiThread {
                 tvMetricCritical.text = criticalCount.toString()
                 tvMetricTotal.text = scans.size.toString()
-                historyAdapter.submitList(scans)
-                val isEmpty = scans.isEmpty()
-                tvEmptyState.isVisible = isEmpty
-                rvRecentScans.isVisible = !isEmpty
             }
         }
     }
