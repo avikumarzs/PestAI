@@ -163,7 +163,7 @@ class Detector(
         detectorListener.onDetect(bestBoxes, inferenceTime, pestCounts)
     }
     
-    fun penalizeDetection(x: Float, y: Float) {
+    fun penalizeDetection(x: Float, y: Float): Boolean {
         val tappedBox = lastStableBoxes.find { box ->
             x >= box.x1 && x <= box.x2 && y >= box.y1 && y <= box.y2
         }
@@ -177,7 +177,9 @@ class Detector(
             // Notify the listener to update the UI instantly
             val pestCounts = lastStableBoxes.groupingBy { it.clsName }.eachCount()
             detectorListener.onDetect(lastStableBoxes, 0, pestCounts)
+            return true
         }
+        return false
     }
 
     private fun bestBox(array: FloatArray, bitmap: Bitmap) : List<BoundingBox>? {

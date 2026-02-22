@@ -42,4 +42,5 @@
     <string name="remedy_steps">Steps</string>
     <string name="remedy_effectiveness">Effectiveness</string>
     <string name="remedy_cost">Cost</string>
+    <string name="settings">Settings</string>
 </resources>

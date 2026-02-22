@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import com.avikshit.PestAI.R
 import com.avikshit.PestAI.SprayEngine
 import com.avikshit.PestAI.WeatherApi
@@ -62,6 +64,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         scanRepository = ScanRepository(AppDatabase.getInstance(requireContext()).scanDao())
 
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        toolbar.inflateMenu(R.menu.home_menu)
+        toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.settingsFragment -> {
+                    findNavController().navigate(R.id.action_home_to_settings)
+                    true
+                }
+                else -> false
+            }
+        }
+
         view.findViewById<FloatingActionButton>(R.id.btnLaunchScanner).setOnClickListener {
             findNavController().navigate(R.id.scanFragment)
         }
@@ -74,6 +88,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onResume()
         // ONLY update the UI dashboard here. Do NOT launch permission requests here!
         view?.let { loadDashboard(it) }
+        updateGreeting()
         
         // Silently check if they granted it in settings while the app was minimized
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -84,6 +99,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onDestroy() {
         super.onDestroy()
         ioExecutor.shutdown()
+    }
+
+    private fun updateGreeting() {
+        val greetingView = view?.findViewById<TextView>(R.id.tvGreeting)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val farmerName = sharedPreferences.getString("farmer_name", "")
+        if (!farmerName.isNullOrEmpty()) {
+            greetingView?.text = "Hello, $farmerName"
+        } else {
+            greetingView?.text = getString(R.string.home_greeting)
+        }
     }
 
     private fun checkLocationPermissions() {

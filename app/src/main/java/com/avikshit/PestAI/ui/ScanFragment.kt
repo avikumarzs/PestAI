@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.Camera
@@ -122,7 +123,7 @@ class ScanFragment : Fragment(R.layout.fragment_scan), Detector.DetectorListener
             val isRover = checkedId == R.id.btnModeRover
             overlayView?.isRoverMode = isRover
             if (isRover) {
-                scanModeStatusText?.text = getString(R.string.scan_mode_rover).let { "🔴 $it" }
+                scanModeStatusText?.text = "🔴"
                 startRoverPulse()
             } else {
                 scanModeStatusText?.text = getString(R.string.scan_mode_general)
@@ -135,7 +136,10 @@ class ScanFragment : Fragment(R.layout.fragment_scan), Detector.DetectorListener
             if (event.action == MotionEvent.ACTION_UP) {
                 val x = event.x / view.width
                 val y = event.y / view.height
-                detector?.penalizeDetection(x, y)
+                val wasPenalized = detector?.penalizeDetection(x, y) ?: false
+                if (wasPenalized) {
+                    Toast.makeText(requireContext(), "Feedback submitted.", Toast.LENGTH_SHORT).show()
+                }
                 view.performClick()
             }
             true // Consume the touch event
