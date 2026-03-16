@@ -25,7 +25,7 @@ We didn't just wrap a model in an app; we engineered a production-grade, context
 
 ## 🛠️ Tech Stack
 * **Language:** Kotlin
-* **Machine Learning:** TensorFlow Lite (YOLOv8 Nano)
+* **Machine Learning:** TensorFlow Lite (YOLOv11 Nano)
 * **Networking:** Retrofit and Gson for communicating with the OpenWeatherMap API.
 * **Asynchronous Operations:** Kotlin Coroutines and `lifecycleScope` for managing background tasks and API calls without blocking the UI thread.
 * **Camera:** AndroidX CameraX for a modern, lifecycle-aware edge-computing camera implementation.
