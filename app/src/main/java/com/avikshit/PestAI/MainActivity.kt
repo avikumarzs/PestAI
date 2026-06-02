@@ -9,10 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androi...........................................................................................................................................................................................................................................................,dx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.avikshit.PestAI.databinding.ActivityMainBinding
+import androidx.navigation.ui.navigateUp
 
 class MainActivity : AppCompatActivity() {
 
